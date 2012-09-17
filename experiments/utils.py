@@ -31,7 +31,7 @@ def sync_experiments(sender, request, user, **kwargs):
 
     # if non anon, get db data
     try:
-        db_experiments = {enrollment.experiment.name: (enrollment.alternative, enrollment.goals) for enrollment in Enrollment.objects.filter(user=user)}
+        db_experiments = dict((enrollment.experiment.name, (enrollment.alternative, enrollment.goals)) for enrollment in Enrollment.objects.filter(user=user))
     except Enrollment.DoesNotExist:
         db_experiments = {}
 
@@ -157,7 +157,7 @@ class WebUser(object):
         # Registered User
         elif not self.is_anonymous():
             try:
-                db_experiments = {enrollment.experiment.name: (enrollment.alternative, enrollment.goals, enrollment.enrollment_date) for enrollment in Enrollment.objects.filter(user=self.get_registered_user())}
+                db_experiments = dict((enrollment.experiment.name, (enrollment.alternative, enrollment.goals, enrollment.enrollment_date)) for enrollment in Enrollment.objects.filter(user=self.get_registered_user()))
             except Enrollment.DoesNotExist:
                 db_experiments = {}
             return db_experiments
